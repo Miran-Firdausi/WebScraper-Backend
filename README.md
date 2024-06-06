@@ -10,6 +10,13 @@ This project is a web scraping tool integrated with Django and Celery for fetchi
 - Database Integration: Scraped data is stored in a database for easy access and retrieval.
 - Admin Interface: The Django admin panel allows administrators to manage scraping tasks and view scraped data.
 
+### Screenshots
+![Screenshot 2024-06-07 033844](https://github.com/Miran-Firdausi/WebScraper-Backend/assets/75238590/169ec647-6773-4353-9544-5d5166e2a715)
+![Screenshot 2024-06-07 033909](https://github.com/Miran-Firdausi/WebScraper-Backend/assets/75238590/7623d659-7b04-4c0c-bcd1-9acf5aa5d848)
+![Screenshot 2024-06-07 033923](https://github.com/Miran-Firdausi/WebScraper-Backend/assets/75238590/e3034540-0bb5-4f49-aaf9-c048cbfed366)
+![Screenshot 2024-06-07 034006](https://github.com/Miran-Firdausi/WebScraper-Backend/assets/75238590/f5016bcd-da5c-4827-9197-7f60dc9f36a6)
+![Screenshot 2024-06-07 034024](https://github.com/Miran-Firdausi/WebScraper-Backend/assets/75238590/f57f838b-78ce-4e70-9466-67d4589957f6)
+
 ### Usage
 1. Access the Django admin panel at http://localhost:8000/admin/ and create a superuser account.
 2. Use the provided APIs to start scraping tasks and retrieve scraped data.
