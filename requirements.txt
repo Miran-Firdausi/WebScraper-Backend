@@ -1,0 +1,10 @@
+Django
+djangorestframework
+django-celery-beat
+django-celery-results
+celery
+redis
+requests
+selenium
+beautifulsoup4
+python-decouple
