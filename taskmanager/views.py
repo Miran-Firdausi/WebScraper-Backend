@@ -6,6 +6,7 @@ from .tasks import scrape_coin_data
 from .serializers import CoinListSerializer, ScrapingStatusSerializer
 from .models import ScrapedData
 import uuid
+from helpers.coin_mapping import COIN_MAP
 
 
 class StartScrapingView(APIView):
@@ -16,7 +17,8 @@ class StartScrapingView(APIView):
             # Generate a unique job id
             job_id = str(uuid.uuid4())
             for coin in coins:
-                scrape_coin_data.apply_async(args=[coin, job_id], task_id=job_id)
+                if coin.upper() in COIN_MAP.keys():
+                    scrape_coin_data.apply_async(args=[coin, job_id], task_id=job_id)
             return Response({'job_id': job_id}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

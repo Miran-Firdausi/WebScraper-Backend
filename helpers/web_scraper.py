@@ -1,11 +1,17 @@
 import time
 from selenium import webdriver
-from selenium.webdriver import ChromeOptions
+from selenium.webdriver import ChromeOptions, ActionChains
+from filelock import FileLock
 from .coin_mapping import COIN_MAP
 from bs4 import BeautifulSoup
+from selenium.webdriver.support import expected_conditions as EC
+import pandas as pd
 
 options = ChromeOptions()
 options.add_argument('--headless=new')
+
+EXCEL_FILE = 'output.xlsx'
+LOCK_FILE = 'output.xlsx.lock'
 
 
 def convert_to_number(string):
@@ -22,7 +28,6 @@ class CoinMarketCap:
     def get_coin_url(coin_abbr):
         base_url = "https://coinmarketcap.com/currencies/"
         coin_name = COIN_MAP.get(coin_abbr, coin_abbr.lower())
-        print(coin_name)
         return f"{base_url}{coin_name}"
 
     @staticmethod
@@ -106,25 +111,10 @@ class CoinMarketCap:
             contract = {}
             coin_data['contracts'] = []
 
-            # Extract contract name
-            contract_name_element = coin_stats_div.find('span', {'class': 'sc-71024e3e-0 dEZnuB'})
-            if contract_name_element:
-                contract_name = contract_name_element.text.strip()[:-1]
-                contract['name'] = contract_name
-
-            # Extract contract address
-            address_element = coin_stats_div.find('a', {'class': 'chain-name'})
-            if address_element:
-                address_value = address_element.get('href')
-                address_value = address_value.split('/')[-1]
-                contract['address'] = address_value
-
-            coin_data['contracts'].append(contract)
-
-            # Extract more contracts if any
-            more_contracts_elements = coin_stats_div.find_all('div', {
+            # Extract contracts information
+            contracts_elements = coin_stats_div.find_all('div', {
                 'class': 'sc-d1ede7e3-0 sc-7f0f401-0 sc-96368265-0 bwRagp gQoblf eBvtSa flexStart'})
-            for element in more_contracts_elements:
+            for element in contracts_elements:
                 contract_name = element.find('span', {'class': 'sc-71024e3e-0 dEZnuB'}).text.strip()
                 address_element = element.find('a')
                 contract = {}
@@ -171,4 +161,24 @@ class CoinMarketCap:
         else:
             coin_data['error'] = 'Coin statistics div not found in HTML.'
         return coin_data
+
+    @staticmethod
+    def save_to_excel(coin_data, file_name='output.xlsx'):
+        with FileLock(LOCK_FILE):
+            try:
+                try:
+                    df_existing = pd.read_excel(EXCEL_FILE)
+                except FileNotFoundError:
+                    df_existing = pd.DataFrame()
+
+                # Create DataFrame for new data
+                df_new = pd.DataFrame([coin_data])
+
+                # Append new data to existing data
+                df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+
+                # Write combined data to Excel
+                df_combined.to_excel(EXCEL_FILE, index=False)
+            except Exception as e:
+                print(f"Error writing to Excel: {e}")
 

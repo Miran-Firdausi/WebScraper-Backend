@@ -26,6 +26,7 @@ def scrape_coin_data(coin_abbr, job_id):
         official_links=coin_data['official_links'],
         socials=coin_data['socials']
     )
+    cmc.save_to_excel(coin_data)
     print("created")
 
     return coin_data

@@ -19,4 +19,5 @@ class ScrapedData(models.Model):
     socials = models.JSONField()
 
     def __str__(self):
-        return self.coin_name
+        return str(self.coin_name) + " - " + str(self.job_id)
+
